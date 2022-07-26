@@ -1,22 +1,26 @@
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react'
 import './App.css';
 
 function App() {
+  const [sec, setSec] = useState(0);
+
+  useEffect(() => {
+    let interval = null
+    interval = setInterval(() => {
+      setSec((sec) => sec + 1000);
+    }, 1000);
+  }, [])
+
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          A chronometer for everything!
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>
+          00:{("0" + Math.floor((sec / 60000) % 60)).slice(-2)}:{("0" + Math.floor((sec / 2000) % 60)).slice(-2)}
+        </p>
       </header>
     </div>
   );
