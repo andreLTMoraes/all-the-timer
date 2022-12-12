@@ -69,7 +69,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function MyDrawer({children}) {
-  const { setSequence } = React.useContext(AppContext)
+  const { sequence, setSequence } = React.useContext(AppContext)
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [presetTimers, setPresetTimers] = React.useState([])
@@ -116,7 +116,7 @@ export default function MyDrawer({children}) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            All the timer
+            {sequence?.name || "All the timer"}
           </Typography>
         </Toolbar>
       </AppBar>
