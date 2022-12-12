@@ -15,6 +15,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 
+import { getPresetTimers } from '../utils/api'
+import Loading from '../components/ListDrawerLoader'
+import { AppContext } from '../context/app'
+
 
 const drawerWidth = 240;
 
@@ -65,8 +69,29 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function MyDrawer({children}) {
+  const { setSequence } = React.useContext(AppContext)
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [presetTimers, setPresetTimers] = React.useState([])
+  const [listLoadings, setListLoadings] = React.useState({
+    presetLoading: true,
+    customLoading: true
+  })
+
+  React.useEffect(() => {
+    const presetList = async () => {
+      const data = await getPresetTimers()
+
+      setPresetTimers(data)
+      setListLoadings((listLoadings) => ({
+        ...listLoadings,
+        presetLoading: false
+      }))
+    }
+
+    presetList()
+    .catch(console.error())
+  }, [])
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -116,17 +141,26 @@ export default function MyDrawer({children}) {
         </DrawerHeader>
         <Divider />
         <span id="drawer-divider-label">Preset</span>
-        <List>
-          {['Pomodoro', 'Tabata'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={text} sx={{color: "#fff"}}/>
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        {
+          listLoadings.presetLoading ?
+          <Loading/> :
+          <List>
+            {presetTimers.map((timer, idx) => (
+              <ListItem key={idx} disablePadding>
+                <ListItemButton onClick={() => setSequence(timer)}>
+                  <ListItemText primary={timer.name} sx={{color: "#fff"}}/>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        }
         <Divider />
         <span id="drawer-divider-label">My timers</span>
+        {
+          listLoadings.customLoading ?
+          <Loading/> :
+          null
+        }
       </Drawer>
       <Main open={open}>
         <DrawerHeader />

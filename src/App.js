@@ -1,9 +1,11 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useContext, useEffect} from 'react'
 import {PlayArrow, Pause, Stop} from '@mui/icons-material'
 import './App.css';
 import MyDrawer from "./components/Drawer"
+import { AppContext } from './context/app'
 
 function App() {
+  const { sequence } = useContext(AppContext) 
   const [timer, setTimer] = useState(10)
   const [chronometer, setChronometer] = useState({
     timerName: 'Round 1',
@@ -14,20 +16,6 @@ function App() {
   const [isActive, setIsActive] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const countRef = useRef(null)
-  const sequence = {
-    type: 'WorkRest',
-    workTime: 10,
-    restTime: 10,
-    workNames: [
-      'Round 1',
-      'Round 2',
-      'Round 3'
-    ],
-    restNames: [
-      'Rest 1',
-      'Rest 2'
-    ]
-  }
   const {timerName} = chronometer
 
   const handleStart = () => {
@@ -52,11 +40,11 @@ function App() {
   }
 
   const configRestTimer = (c) => {
-    setTimer(sequence.restTime)
+    setTimer(sequence?.timer?.restTime)
     return(
       {
         ...c,
-        timerName: sequence.restNames[c.timerIdx],
+        timerName: sequence?.timer?.restNames[c.timerIdx],
         timerCounter: c.timerCounter - 1,
         timerIdx: c.timerIdx + 1,
         restFlag: true
@@ -65,11 +53,11 @@ function App() {
   }
 
   const configWorkTimer = (c) => {
-    setTimer(sequence.workTime)
+    setTimer(sequence?.timer?.workTime)
     return(
       {
         ...c,
-        timerName: sequence.workNames[c.timerIdx],
+        timerName: sequence?.timer?.workNames[c.timerIdx],
         timerCounter: c.timerCounter - 1,
         restFlag: false
       }
@@ -92,10 +80,10 @@ function App() {
     clearInterval(countRef.current)
     setIsActive(false)
     setIsPaused(false)
-    setTimer(sequence.workTime)
+    setTimer(sequence?.timer?.workTime)
     const resetObject = {
-      timerName: 'Round 1',
-      timerCounter: 4,
+      timerName: sequence?.timer?.workNames[0],
+      timerCounter: (sequence?.timer?.workNames.length + sequence?.timer?.restNames.length) - 1,
       restFlag: false,
       timerIdx: 0
     }
@@ -116,6 +104,9 @@ function App() {
     return `${getHours} : ${getMinutes} : ${getSeconds}`
   }
 
+  useEffect(() => {
+    handleReset(false)
+  }, [sequence])
 
   return (
     <MyDrawer>
