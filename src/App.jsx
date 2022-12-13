@@ -4,6 +4,9 @@ import './App.css';
 import MyDrawer from "./components/Drawer"
 import { AppContext } from './context/app'
 
+import middleBeep from './assets/middle_beep.wav'
+import endBeep from './assets/end_beep.wav'
+
 function App() {
   const { sequence } = useContext(AppContext) 
   const [timer, setTimer] = useState(10)
@@ -23,9 +26,13 @@ function App() {
     setIsPaused(true)
     countRef.current = setInterval(() => {
       setTimer((timer) => 
+        sequence?.fiveBeeps && timer < 7 && timer > 1 ?
+        playBeep(timer, middleBeep) :
+        timer === 1 ?
+        playBeep(timer, endBeep) :
         timer === 0 ?
         hasNext() :
-        timer -1)  
+        timer -1) 
     }, 1000)
   }
 
@@ -107,6 +114,11 @@ function App() {
   useEffect(() => {
     handleReset(false)
   }, [sequence])
+
+  const playBeep = (timer, beep) => {
+    new Audio(beep).play()
+    return timer - 1
+  }
 
   return (
     <MyDrawer>

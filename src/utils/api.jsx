@@ -5,6 +5,7 @@ export const getPresetTimers = () => {
                 {
                     name: "Teste",
                     type: "WorkRest",
+                    fiveBeeps: true,
                     timer: {
                         workTime: 10,
                         restTime: 5,
@@ -22,6 +23,7 @@ export const getPresetTimers = () => {
                 {
                     name: "Tabata",
                     type: "WorkRest",
+                    fiveBeeps: true,
                     timer: {
                         workTime: 20,
                         restTime: 10,
@@ -49,6 +51,7 @@ export const getPresetTimers = () => {
                 {
                     name: "Pomodoro",
                     type: "WorkRest",
+                    fiveBeeps: false,
                     timer: {
                         workTime: 1500,
                         restTime: 300,
